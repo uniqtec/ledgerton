@@ -445,6 +445,67 @@ footer a { color: var(--ink-soft); }
   .tip-hat { transform-origin: 100px 104px; transition: transform 220ms cubic-bezier(.34,1.56,.64,1); }
   .hero-art:hover .tip-hat { transform: rotate(-7deg) translateY(-3px); }
 }
+
+/* A note pad for telling him what is not right. There is no server behind this
+   page and there is not going to be one, so the message is written here and
+   handed to whatever the person already uses for post. */
+.note {
+  margin-top: 30px;
+  max-width: 680px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 22px 24px 20px;
+  box-shadow: 0 10px 24px rgba(33, 48, 59, 0.10), 0 2px 0 rgba(33, 48, 59, 0.08);
+}
+.note-kind { display: flex; gap: 10px; flex-wrap: wrap; }
+.note-pick {
+  font-family: var(--body);
+  font-size: 0.88rem;
+  padding: 8px 15px;
+  border: 2px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+.note-pick:hover { border-color: var(--ink-faint); color: var(--ink); }
+.note-pick[aria-checked="true"] { background: var(--marker-lemon); border-color: var(--ink); color: var(--ink); }
+.note-label {
+  display: block;
+  margin: 20px 0 7px;
+  font-size: 0.74rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.note-line, .note-body {
+  width: 100%;
+  font-family: var(--body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--paper-deep);
+  border: 2px solid var(--rule);
+  border-radius: 6px;
+  padding: 11px 13px;
+}
+.note-line:focus, .note-body:focus { outline: none; border-color: var(--ink); }
+.note-body { resize: vertical; min-height: 132px; line-height: 1.55; }
+.note-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 24px; }
+.note-send { font-size: 0.95rem; padding: 13px 26px; border-width: 3px; cursor: pointer; }
+/* .quiet-link was written for an anchor; a button needs its chrome taken off. */
+.note-actions .quiet-link { background: none; border: 0; padding: 0; cursor: pointer; }
+.note-fine { margin-top: 18px; align-items: baseline; }
+.note-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  background: var(--marker-lemon);
+  padding: 2px 6px;
+  border-radius: 3px;
+  overflow-wrap: anywhere;
+}
+.note-warn { color: var(--stamp-red); min-height: 1.2em; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -1076,6 +1137,56 @@ footer a { color: var(--ink-soft); }
     </div>
   </section>
 
+  <hr class="rule">
+
+  <!-- Reporting something. A static page cannot send post, and a form service
+       would mean a third party holding other people's words, so the message is
+       composed here and handed to the person's own mail client. They see it
+       before it goes, which is the right way round for a bug report.
+
+       Every subject begins [Ledgerton], which is the whole point: the address
+       behind this is a general one that receives a great deal of nonsense, and
+       a tag makes the real post filterable on arrival. -->
+  <section id="report">
+    <span class="eyebrow" data-t="report.eyebrow">keď niečo škrípe</span>
+    <h2 style="margin-top:8px" data-t="report.title" data-html>Povedzte mu, čo<br>nie je v poriadku</h2>
+    <p class="lede" style="margin-top:18px" data-t="report.lede">Chyba, ktorá vás zdržala, alebo vec, ktorá tam chýba. Správa sa napíše tu a odošlete ju vy zo svojej pošty — nič neodíde bez toho, aby ste to videli.</p>
+
+    <div class="note">
+      <div class="note-kind" role="radiogroup" data-t-aria="report.kindLabel" aria-label="Čoho sa to týka">
+        <button type="button" class="note-pick" data-kind="bug" role="radio" aria-checked="true" data-t="report.bug">Niečo je pokazené</button>
+        <button type="button" class="note-pick" data-kind="idea" role="radio" aria-checked="false" data-t="report.idea">Niečo tam chýba</button>
+      </div>
+
+      <label class="note-label" for="report-summary" data-t="report.summaryLabel">Jednou vetou</label>
+      <input id="report-summary" class="note-line" type="text" maxlength="90"
+             data-t-ph="report.summaryHint" placeholder="Nastavenia sa otvoria prázdne">
+
+      <label class="note-label" for="report-detail" data-t="report.detailLabel">A trochu podrobnejšie</label>
+      <textarea id="report-detail" class="note-body" rows="6"
+                data-t-ph="report.detailHint" placeholder="Čo ste robili, čo sa stalo a čo ste čakali."></textarea>
+
+      <div class="note-actions">
+        <button type="button" class="stamp note-send" id="report-send" data-t="report.send">Otvoriť v pošte</button>
+        <button type="button" class="quiet-link" id="report-copy" data-t="report.copy">…alebo skopírovať celú správu</button>
+      </div>
+      <!-- With scripting off the card cannot compose anything, so the address
+           is given in words. Spelled out rather than linked on purpose: a plain
+           mailto: in the source of a public page is the first thing a harvester
+           helps itself to, and this inbox has enough of that already. -->
+      <noscript>
+        <p class="card-fine">Napíšte nám na <b>info (zavináč) uniqtec.sk</b> a do predmetu dajte <b>[Ledgerton]</b>.
+        &nbsp;·&nbsp; Write to <b>info (at) uniqtec.sk</b> with <b>[Ledgerton]</b> in the subject.</p>
+      </noscript>
+      <p class="card-fine note-warn" id="report-warning" role="status"></p>
+      <p class="card-fine note-fine">
+        <span data-t="report.subjectNote">Predmet bude:</span>
+        <code class="note-tag" id="report-subject-preview">[Ledgerton]</code>
+        <span id="report-address"></span>
+      </p>
+    </div>
+  </section>
+
   <footer>
     <span data-t="foot.1">Ledgerton — vynález UniqTec.</span>
     <a href="https://uniqtec.com/" data-t="foot.2">uniqtec.com</a>
@@ -1091,7 +1202,7 @@ footer a { color: var(--ink-soft); }
    can never drift between versions. The markup ships Slovak, so the page is
    already correct before this runs - and stays correct if it never does.
 --------------------------------------------------------------------------- */
-const TEXT = {"sk":{"meta.title":"Ledgerton","meta.desc":"Ledgerton je komorník pre vaše účtovníctvo. Prečíta každý naskenovaný doklad — faktúru aj bloček z benzínky — založí ho podľa dátumu vystavenia a zaúčtuje skôr, než dopijete kávu.","hero.role":"komorník a účtovník, k vašim službám","hero.lede":"Vy naskenujete faktúru alebo pokrčený bloček z benzínky. On ho prečíta, <span class=\"hl\">založí pod správny mesiac<\/span>, zaúčtuje ho a napíše do Slacku. Vy sa vrátite ku káve.","cta.button":"Vezmite ho do služby\n          <small>pre macOS · zadarmo<\/small>","cta.peek":"…alebo si ho najprv pozrite pri práci ↓","pile.eyebrow":"situácia predtým, než príde","pile.title":"Je tam priečinok.<br>Ten priečinok neotvárate.","pile.body":"Bločky odfotené na benzínke. Faktúry za hosting v HTML e-maile. Účet za telefón, ktorý sú v skutočnosti tri faktúry v jednom kabáte. Všetko pristane na jednom mieste a čaká na nedeľný večer, ktorý stále neprichádza.","flow.eyebrow":"sledujte doklad","flow.title":"Jeden doklad, z vášho priečinka<br>až do účtovníctva","flow.lede":"Dve cesty dnu, jeden komorník a rázcestie: všetko, čo sedí, ide rovno ďalej, všetko ostatné <span class=\"hl-mint\">počká na vás<\/span>.","flow.swipe":"← potiahnite obrázok do strán →","d.in1.title":"Príde sken","d.in1.a":"faktúra alebo bloček,","d.in1.b":"PDF či fotka v Dropboxe","d.in2.title":"Alebo ho prepošlete","d.in2.a":"Sám zistí, ktorá časť","d.in2.b":"e-mailu je doklad","d.models":"číta tým, čo už platíte","d.read.title":"Ledgerton ho prečíta","d.read.a":"dodávateľ, IČO, IČ DPH, číslo","d.read.b":"dokladu, dátumy, sadzby DPH","d.check.title":"Potom skontroluje","d.yes":"všetko sedí","d.no":"…nesedí","d.filed.title":"Založené","d.filed.a":"kópia podľa dátumu","d.filed.b":"vystavenia — nie podľa","d.filed.c":"dňa skenovania","d.books":"zapíše do účtovníctva, ktoré vediete","d.booked.title":"Zaúčtované","d.booked.a":"ako náklad, s","d.booked.b":"priloženým originálom","d.told.title":"Oznámené","d.told.a":"dodávateľ, suma a DPH","d.told.b":"vo vašom kanáli","d.wait.title":"Počká na vás","d.wait.a":"doklad príde do Slacku aj s dôvodom a s dvoma","d.wait.b":"tlačidlami — nič sa nezaúčtuje, kým nepoviete vy","d.wait.yes":"Zaúčtovať","d.wait.no":"Zahodiť","d.yourcall":"rozhodnete vy →","wires.eyebrow":"domácnosť, v ktorej slúži","wires.title":"Odkiaľ berie<br>a kam ukladá","w.folder.t":"Váš priečinok so skenmi","w.folder.d":"Dropbox, iCloud, kdekoľvek na disku. Sleduje ho a zareaguje hneď, ako tam niečo pristane.","w.mail.t":"Adresa na preposielanie","w.mail.d":"Pošlite mu doklad e-mailom. Sám zistí, ktorá príloha je tá pravá — a z HTML faktúry spraví poriadne PDF.","w.slack.d":"Každý doklad oznámi aj s číslami. Čokoľvek, čím si nie je istý, príde s PDF a dvoma tlačidlami: <b>zaúčtovať<\/b> alebo <b>zahodiť<\/b>.","w.books.t":"Vaše účtovníctvo","w.books.d":"SuperFaktura, mPOHODA alebo KROS — vyberiete si v nastaveniach. Kam sa dá, priloží k nákladu aj originál dokladu.","w.ai.t":"Claude alebo ChatGPT","w.ai.d":"Podľa toho, čo už platíte — predplatné alebo API kľúč. <span class=\"tag\">nie je vyberavý<\/span>","w.bar.t":"Vaša horná lišta","w.bar.d":"Ledgerton v lište, počet čakajúcich dokladov, zoznam všetkého spracovaného a okno s nastaveniami. Čo čaká, zaúčtujete alebo zahodíte priamo tam.","care.eyebrow":"to najdôležitejšie","care.title":"Dobrý komorník vie,<br>kedy <em>nekonať<\/em>","care.body":"Nezaúčtuje doklad, za ktorý sa nevie zaručiť. Ak výpočet nesedí so sumou, ak chýba dátum, ak sa ukáže, že je to dodací list — <span class=\"hl-mint\">počká na vás<\/span>, aj s napísaným dôvodom.","care.1":"<b>Nikdy dvakrát.<\/b> Každý doklad pozná podľa obsahu, takže ten istý doklad znovu naskenovaný, premenovaný či znovu stiahnutý je stále ten istý doklad.","care.2":"<b>Najprv sa pozrie do účtovníctva.<\/b> Ak má ten istý dodávateľ to isté číslo dokladu už zaevidované — hoci aj ručne — nechá ho tak.","care.3":"<b>Staré doklady počkajú.<\/b> Čokoľvek staršie ako rok a pol je pravdepodobne už zaúčtované, tak sa radšej spýta.","care.4":"<b>Originálu sa nedotkne.<\/b> Pracuje s kópiou. Váš sken zostane presne tam, kde ste ho nechali.","tally.eyebrow":"čo z toho máte","tally.title":"Večer, ktorý ste tomu chceli obetovať","tally.min":"min","tally.sec":"sek","tally.1":"ušetrených na doklad — otvoriť, prečítať, prepísať, založiť a overiť, či ste to už nespravili","tally.2":"od pristátia skenu v priečinku po náklad v účtovníctve","tally.3":"koľkokrát zaúčtoval ten istý doklad dvakrát","tally.3b":"a mieni to tak nechať","end.title":"Smiem si vziať<br>ten priečinok?","end.body":"Zadarmo, beží na vašom Macu a nič z neho neodíde okrem samotného dokladu — modelu, ktorý ho prečíta, a účtovníctvu, ktoré ho založí.","end.note":"zatiaľ bez podpisu od Apple — .dmg sa ešte šije","foot.1":"Ledgerton — vynález UniqTec.","foot.2":"uniqtec.com","foot.3":"Pre ľudí, ktorí vlastnia skener a majú to zaňho.","art.ledgerton":"Ledgerton, komorník s účtovnou knihou pod pazuchou","art.flowTitle":"Ako doklad prejde cez Ledgertona","art.flowDesc":"Príde naskenované PDF alebo prepošlete e-mail — faktúra, alebo bloček z pokladne. Ledgerton ho prečíta pomocou Claude alebo ChatGPT, potom skontroluje výpočet. Ak suma sedí, založí kópiu podľa mesiaca vystavenia, zaúčtuje ju do vášho účtovníctva — SuperFaktura, mPOHODA alebo KROS — s priloženým originálom a oznámi to v Slacku. Ak nesedí, doklad počká v Slacku na vaše schválenie alebo zamietnutie.","art.receipt":"Nakreslený bloček: 131,88 plus 30,33 DPH je 162,21 €, opečiatkovaný ako skontrolovaný","art.stamp":"SEDÍ","art.tray":"Ledgerton ponúka strieborný podnos","care.5":"<b>Bloček je plnohodnotný doklad.<\/b> Nemá splatnosť ani variabilný symbol — tak bloček vyzerá, nie je to chyba. Nezdrží ho preto ani na chvíľu.","w.hand.t":"Podanie z ruky","w.hand.d":"Bloček, ktorý nikdy nemal ležať v priečinku? Pustite ho do okna z hornej lišty. Originál zostane tam, kde je.","flow.third":"Tretia cesta dnu sa sem nezmestila, lebo je najkratšia: doklad mu <span class=\"hl-mint\">podáte priamo<\/span> z hornej lišty.","d.books.list":"SuperFaktura · mPOHODA · KROS","tally.1b":"≈ hodina späť na každých pätnásť dokladov","install.lead":"Otvorte Terminál a vložte tento riadok:","install.copy":"Skopírovať","install.copied":"Skopírované","install.note":"Usadí sa v Aplikáciách a objaví sa v hornej lište. Terminál potom už nikdy nebudete potrebovať.","install.req":"macOS 13 a novší · Apple Silicon","install.read":"najprv si ten skript prečítajte","install.title":"Terminál","install.out1":"overené · 45 MB","install.out2":"Nainštalované. Hľadajte Ledgertona v hornej lište.","reel.eyebrow":"jedna minúta","reel.title":"Pozrite si ho pri práci","reel.note":"Komentár je v angličtine · 1:01"},"en":{"hero.role":"butler & bookkeeper, at your service","hero.lede":"You scan the invoice, or the crumpled receipt from the petrol station. He reads it, <span class=\"hl\">files it under the right month<\/span>, enters it in the books, and mentions it in Slack. You go back to your coffee.","cta.button":"Take him on\n            <small>for macOS · free<\/small>","cta.peek":"…or watch him work first ↓","art.ledgerton":"Ledgerton, a butler holding a ledger book under one arm","pile.eyebrow":"the situation, before he arrives","pile.title":"There is a folder.<br>You do not open the folder.","pile.body":"Receipts photographed at petrol stations. Hosting invoices as HTML e-mail. A phone bill\n      that is really three invoices wearing a trench coat. They all land in the same place and\n      wait for a Sunday evening that keeps not happening.","flow.eyebrow":"follow the document","flow.title":"One document, from your folder<br>to the books","flow.lede":"Two ways in, one butler, and a fork in the road: everything that adds up goes\n      straight through, everything that doesn't <span class=\"hl-mint\">waits for you<\/span>.","art.flowTitle":"How a document travels through Ledgerton","art.flowDesc":"A scanned PDF or a forwarded e-mail arrives — an invoice, or a receipt from a till. Ledgerton reads it using Claude or ChatGPT, then checks the arithmetic. If the sums agree he files a copy under the month the document was issued, books it into your accounting system - SuperFaktura, mPOHODA or KROS - with the original attached where that system allows it, and announces it in Slack. If they do not agree, the document waits in Slack for you to approve or reject.","d.in1.title":"A scan lands","d.in1.a":"an invoice or a receipt,","d.in1.b":"PDF or photo, in Dropbox","d.in2.title":"Or you forward it","d.in2.a":"He works out which part","d.in2.b":"of the e-mail is the document","d.models":"read with whichever you pay for","d.books":"written into whichever books you keep","d.read.title":"Ledgerton reads it","d.read.a":"supplier, IČO, IČ DPH, document","d.read.b":"number, dates, every VAT line","d.check.title":"Then he checks","d.yes":"it all adds up","d.no":"…it doesn't","d.filed.title":"Filed","d.filed.a":"a copy, filed by the","d.filed.b":"document date — never","d.filed.c":"the day you scanned it","d.booked.title":"Booked","d.booked.a":"as an expense, with","d.booked.b":"the original attached","d.told.title":"Announced","d.told.a":"vendor, total and VAT","d.told.b":"posted to your channel","d.wait.title":"It waits for you","d.wait.a":"the document arrives in Slack with the reason,","d.wait.b":"and two buttons — nothing is booked until you say","d.wait.yes":"Book it","d.wait.no":"Bin it","d.yourcall":"your call →","flow.swipe":"← drag the drawing sideways to follow it all →","wires.eyebrow":"the household he works in","wires.title":"Where he fetches from,<br>and where he puts things","w.folder.t":"Your scan folder","w.folder.d":"Dropbox, iCloud, anywhere on disk. He watches it and reacts the moment something lands.","w.mail.t":"A forwarding address","w.mail.d":"Send him the document by e-mail. He works out which attachment is the real one — and turns an HTML invoice into a proper PDF.","w.slack.d":"Every document announced with its numbers. Anything he's unsure of arrives with the PDF and two buttons: <b>book it<\/b> or <b>bin it<\/b>.","w.books.t":"Your accounting system","w.books.d":"SuperFaktura, mPOHODA or KROS — you choose in the settings. Where the system allows it, the original document goes with the expense.","w.ai.t":"Claude, or ChatGPT","w.ai.d":"Whichever you already pay for — on a subscription, or an API key. <span class=\"tag\">he isn't fussy<\/span>","w.bar.t":"Your menu bar","w.bar.d":"Ledgerton in the bar, a count of anything waiting, the whole list of what he has processed, and a settings window. Anything waiting can be booked or binned right there.","care.eyebrow":"the part that matters","care.title":"A good butler knows<br>when <em>not<\/em> to act","art.stamp":"CHECKED","care.body":"He will not enter a document he cannot vouch for. If the arithmetic disagrees with the\n          total, if the date is missing, if it turns out to be a delivery note —\n          <span class=\"hl-mint\">it waits for you<\/span>, with the reason written out.","care.1":"<b>Never twice.<\/b> Every document is recognised by its contents, so the same document scanned again, renamed, or re-synced is still the same document.","care.2":"<b>He checks with the books first.<\/b> If the same supplier already has that document number entered — even by hand — he leaves it alone.","care.3":"<b>Old documents wait.<\/b> Anything older than a year and a half is probably already booked, so he asks rather than assumes.","care.4":"<b>The original is never touched.<\/b> He works from a copy. Your scan stays exactly where you put it.","tally.eyebrow":"what you get back","tally.title":"The evening you were going to spend on this","tally.min":"min","tally.1":"saved per document — opening it, reading it, typing it in, filing it, checking you hadn't already","tally.sec":"sec","tally.2":"from a scan landing in the folder to the expense appearing in your books","tally.3":"the number of times he has entered the same document twice","tally.3b":"and he intends to keep it there","end.title":"Shall I take that folder,<br>sir or madam?","end.body":"Free, runs on your own Mac, and nothing leaves it except the document itself — to the model that reads it and the accountant that files it.","end.note":"not yet signed by Apple — the .dmg is still being tailored","foot.1":"Ledgerton — a UniqTec contraption.","foot.2":"uniqtec.com","foot.3":"Made for people who own a scanner and resent it.","meta.title":"Ledgerton","meta.desc":"Ledgerton is a butler for your bookkeeping. He reads every scanned document — invoices and petrol-station receipts alike — files it by date, and enters it in the books before you've finished your coffee.","art.receipt":"A doodled till receipt showing 131,88 plus 30,33 VAT making 162,21 euros, stamped as checked","art.tray":"Ledgerton offering a silver tray","care.5":"<b>A till receipt is a document like any other.<\/b> No due date, no variable symbol — that is what a receipt is, not a fault. He never holds one up over it.","w.hand.t":"Handed straight over","w.hand.d":"A receipt that was never going to reach a folder? Drop it on the window from the menu bar. The original stays where it is.","flow.third":"The third way in did not fit on the drawing, because it is the shortest: <span class=\"hl-mint\">hand him one<\/span> straight from the menu bar.","d.books.list":"SuperFaktura · mPOHODA · KROS","tally.1b":"≈ an hour back for every fifteen documents","install.lead":"Open Terminal and paste this line:","install.copy":"Copy","install.copied":"Copied","install.note":"He moves into Applications and appears in the menu bar. You will not need Terminal again.","install.req":"macOS 13 or newer · Apple Silicon","install.read":"read the script first","install.title":"Terminal","install.out1":"checked · 45 MB","install.out2":"Installed. Look for Ledgerton in your menu bar.","reel.eyebrow":"one minute","reel.title":"Watch him work","reel.note":"1:01 · with captions"}};
+const TEXT = {"sk":{"meta.title":"Ledgerton","meta.desc":"Ledgerton je komorník pre vaše účtovníctvo. Prečíta každý naskenovaný doklad — faktúru aj bloček z benzínky — založí ho podľa dátumu vystavenia a zaúčtuje skôr, než dopijete kávu.","hero.role":"komorník a účtovník, k vašim službám","hero.lede":"Vy naskenujete faktúru alebo pokrčený bloček z benzínky. On ho prečíta, <span class=\"hl\">založí pod správny mesiac<\/span>, zaúčtuje ho a napíše do Slacku. Vy sa vrátite ku káve.","cta.button":"Vezmite ho do služby\n          <small>pre macOS · zadarmo<\/small>","cta.peek":"…alebo si ho najprv pozrite pri práci ↓","pile.eyebrow":"situácia predtým, než príde","pile.title":"Je tam priečinok.<br>Ten priečinok neotvárate.","pile.body":"Bločky odfotené na benzínke. Faktúry za hosting v HTML e-maile. Účet za telefón, ktorý sú v skutočnosti tri faktúry v jednom kabáte. Všetko pristane na jednom mieste a čaká na nedeľný večer, ktorý stále neprichádza.","flow.eyebrow":"sledujte doklad","flow.title":"Jeden doklad, z vášho priečinka<br>až do účtovníctva","flow.lede":"Dve cesty dnu, jeden komorník a rázcestie: všetko, čo sedí, ide rovno ďalej, všetko ostatné <span class=\"hl-mint\">počká na vás<\/span>.","flow.swipe":"← potiahnite obrázok do strán →","d.in1.title":"Príde sken","d.in1.a":"faktúra alebo bloček,","d.in1.b":"PDF či fotka v Dropboxe","d.in2.title":"Alebo ho prepošlete","d.in2.a":"Sám zistí, ktorá časť","d.in2.b":"e-mailu je doklad","d.models":"číta tým, čo už platíte","d.read.title":"Ledgerton ho prečíta","d.read.a":"dodávateľ, IČO, IČ DPH, číslo","d.read.b":"dokladu, dátumy, sadzby DPH","d.check.title":"Potom skontroluje","d.yes":"všetko sedí","d.no":"…nesedí","d.filed.title":"Založené","d.filed.a":"kópia podľa dátumu","d.filed.b":"vystavenia — nie podľa","d.filed.c":"dňa skenovania","d.books":"zapíše do účtovníctva, ktoré vediete","d.booked.title":"Zaúčtované","d.booked.a":"ako náklad, s","d.booked.b":"priloženým originálom","d.told.title":"Oznámené","d.told.a":"dodávateľ, suma a DPH","d.told.b":"vo vašom kanáli","d.wait.title":"Počká na vás","d.wait.a":"doklad príde do Slacku aj s dôvodom a s dvoma","d.wait.b":"tlačidlami — nič sa nezaúčtuje, kým nepoviete vy","d.wait.yes":"Zaúčtovať","d.wait.no":"Zahodiť","d.yourcall":"rozhodnete vy →","wires.eyebrow":"domácnosť, v ktorej slúži","wires.title":"Odkiaľ berie<br>a kam ukladá","w.folder.t":"Váš priečinok so skenmi","w.folder.d":"Dropbox, iCloud, kdekoľvek na disku. Sleduje ho a zareaguje hneď, ako tam niečo pristane.","w.mail.t":"Adresa na preposielanie","w.mail.d":"Pošlite mu doklad e-mailom. Sám zistí, ktorá príloha je tá pravá — a z HTML faktúry spraví poriadne PDF.","w.slack.d":"Každý doklad oznámi aj s číslami. Čokoľvek, čím si nie je istý, príde s PDF a dvoma tlačidlami: <b>zaúčtovať<\/b> alebo <b>zahodiť<\/b>.","w.books.t":"Vaše účtovníctvo","w.books.d":"SuperFaktura, mPOHODA alebo KROS — vyberiete si v nastaveniach. Kam sa dá, priloží k nákladu aj originál dokladu.","w.ai.t":"Claude alebo ChatGPT","w.ai.d":"Podľa toho, čo už platíte — predplatné alebo API kľúč. <span class=\"tag\">nie je vyberavý<\/span>","w.bar.t":"Vaša horná lišta","w.bar.d":"Ledgerton v lište, počet čakajúcich dokladov, zoznam všetkého spracovaného a okno s nastaveniami. Čo čaká, zaúčtujete alebo zahodíte priamo tam.","care.eyebrow":"to najdôležitejšie","care.title":"Dobrý komorník vie,<br>kedy <em>nekonať<\/em>","care.body":"Nezaúčtuje doklad, za ktorý sa nevie zaručiť. Ak výpočet nesedí so sumou, ak chýba dátum, ak sa ukáže, že je to dodací list — <span class=\"hl-mint\">počká na vás<\/span>, aj s napísaným dôvodom.","care.1":"<b>Nikdy dvakrát.<\/b> Každý doklad pozná podľa obsahu, takže ten istý doklad znovu naskenovaný, premenovaný či znovu stiahnutý je stále ten istý doklad.","care.2":"<b>Najprv sa pozrie do účtovníctva.<\/b> Ak má ten istý dodávateľ to isté číslo dokladu už zaevidované — hoci aj ručne — nechá ho tak.","care.3":"<b>Staré doklady počkajú.<\/b> Čokoľvek staršie ako rok a pol je pravdepodobne už zaúčtované, tak sa radšej spýta.","care.4":"<b>Originálu sa nedotkne.<\/b> Pracuje s kópiou. Váš sken zostane presne tam, kde ste ho nechali.","tally.eyebrow":"čo z toho máte","tally.title":"Večer, ktorý ste tomu chceli obetovať","tally.min":"min","tally.sec":"sek","tally.1":"ušetrených na doklad — otvoriť, prečítať, prepísať, založiť a overiť, či ste to už nespravili","tally.2":"od pristátia skenu v priečinku po náklad v účtovníctve","tally.3":"koľkokrát zaúčtoval ten istý doklad dvakrát","tally.3b":"a mieni to tak nechať","end.title":"Smiem si vziať<br>ten priečinok?","end.body":"Zadarmo, beží na vašom Macu a nič z neho neodíde okrem samotného dokladu — modelu, ktorý ho prečíta, a účtovníctvu, ktoré ho založí.","end.note":"zatiaľ bez podpisu od Apple — .dmg sa ešte šije","foot.1":"Ledgerton — vynález UniqTec.","foot.2":"uniqtec.com","foot.3":"Pre ľudí, ktorí vlastnia skener a majú to zaňho.","art.ledgerton":"Ledgerton, komorník s účtovnou knihou pod pazuchou","art.flowTitle":"Ako doklad prejde cez Ledgertona","art.flowDesc":"Príde naskenované PDF alebo prepošlete e-mail — faktúra, alebo bloček z pokladne. Ledgerton ho prečíta pomocou Claude alebo ChatGPT, potom skontroluje výpočet. Ak suma sedí, založí kópiu podľa mesiaca vystavenia, zaúčtuje ju do vášho účtovníctva — SuperFaktura, mPOHODA alebo KROS — s priloženým originálom a oznámi to v Slacku. Ak nesedí, doklad počká v Slacku na vaše schválenie alebo zamietnutie.","art.receipt":"Nakreslený bloček: 131,88 plus 30,33 DPH je 162,21 €, opečiatkovaný ako skontrolovaný","art.stamp":"SEDÍ","art.tray":"Ledgerton ponúka strieborný podnos","care.5":"<b>Bloček je plnohodnotný doklad.<\/b> Nemá splatnosť ani variabilný symbol — tak bloček vyzerá, nie je to chyba. Nezdrží ho preto ani na chvíľu.","w.hand.t":"Podanie z ruky","w.hand.d":"Bloček, ktorý nikdy nemal ležať v priečinku? Pustite ho do okna z hornej lišty. Originál zostane tam, kde je.","flow.third":"Tretia cesta dnu sa sem nezmestila, lebo je najkratšia: doklad mu <span class=\"hl-mint\">podáte priamo<\/span> z hornej lišty.","d.books.list":"SuperFaktura · mPOHODA · KROS","tally.1b":"≈ hodina späť na každých pätnásť dokladov","install.lead":"Otvorte Terminál a vložte tento riadok:","install.copy":"Skopírovať","install.copied":"Skopírované","install.note":"Usadí sa v Aplikáciách a objaví sa v hornej lište. Terminál potom už nikdy nebudete potrebovať.","install.req":"macOS 13 a novší · Apple Silicon","install.read":"najprv si ten skript prečítajte","install.title":"Terminál","install.out1":"overené · 45 MB","install.out2":"Nainštalované. Hľadajte Ledgertona v hornej lište.","reel.eyebrow":"jedna minúta","reel.title":"Pozrite si ho pri práci","reel.note":"Komentár je v angličtine · 1:01","report.eyebrow":"keď niečo škrípe","report.title":"Povedzte mu, čo<br>nie je v poriadku","report.lede":"Chyba, ktorá vás zdržala, alebo vec, ktorá tam chýba. Správa sa napíše tu a odošlete ju vy zo svojej pošty — nič neodíde bez toho, aby ste to videli.","report.kindLabel":"Čoho sa to týka","report.bug":"Niečo je pokazené","report.idea":"Niečo tam chýba","report.summaryLabel":"Jednou vetou","report.summaryHint":"Nastavenia sa otvoria prázdne","report.detailLabel":"A trochu podrobnejšie","report.detailHint":"Čo ste robili, čo sa stalo a čo ste čakali. Ak viete verziu macOS, pomôže to.","report.send":"Otvoriť v pošte","report.copy":"…alebo skopírovať celú správu","report.copied":"Skopírované","report.subjectNote":"Predmet bude:","report.subjectBug":"Chyba","report.subjectIdea":"Návrh","report.sentFrom":"odoslané zo stránky Ledgertona","report.to":"Komu","report.subjectWord":"Predmet","report.needSomething":"Napíšte aspoň vetu, nech vie, čoho sa to týka.","report.tooLong":"Na poštového klienta je to pridlhé — radšej si to skopírujte."},"en":{"hero.role":"butler & bookkeeper, at your service","hero.lede":"You scan the invoice, or the crumpled receipt from the petrol station. He reads it, <span class=\"hl\">files it under the right month<\/span>, enters it in the books, and mentions it in Slack. You go back to your coffee.","cta.button":"Take him on\n            <small>for macOS · free<\/small>","cta.peek":"…or watch him work first ↓","art.ledgerton":"Ledgerton, a butler holding a ledger book under one arm","pile.eyebrow":"the situation, before he arrives","pile.title":"There is a folder.<br>You do not open the folder.","pile.body":"Receipts photographed at petrol stations. Hosting invoices as HTML e-mail. A phone bill\n      that is really three invoices wearing a trench coat. They all land in the same place and\n      wait for a Sunday evening that keeps not happening.","flow.eyebrow":"follow the document","flow.title":"One document, from your folder<br>to the books","flow.lede":"Two ways in, one butler, and a fork in the road: everything that adds up goes\n      straight through, everything that doesn't <span class=\"hl-mint\">waits for you<\/span>.","art.flowTitle":"How a document travels through Ledgerton","art.flowDesc":"A scanned PDF or a forwarded e-mail arrives — an invoice, or a receipt from a till. Ledgerton reads it using Claude or ChatGPT, then checks the arithmetic. If the sums agree he files a copy under the month the document was issued, books it into your accounting system - SuperFaktura, mPOHODA or KROS - with the original attached where that system allows it, and announces it in Slack. If they do not agree, the document waits in Slack for you to approve or reject.","d.in1.title":"A scan lands","d.in1.a":"an invoice or a receipt,","d.in1.b":"PDF or photo, in Dropbox","d.in2.title":"Or you forward it","d.in2.a":"He works out which part","d.in2.b":"of the e-mail is the document","d.models":"read with whichever you pay for","d.books":"written into whichever books you keep","d.read.title":"Ledgerton reads it","d.read.a":"supplier, IČO, IČ DPH, document","d.read.b":"number, dates, every VAT line","d.check.title":"Then he checks","d.yes":"it all adds up","d.no":"…it doesn't","d.filed.title":"Filed","d.filed.a":"a copy, filed by the","d.filed.b":"document date — never","d.filed.c":"the day you scanned it","d.booked.title":"Booked","d.booked.a":"as an expense, with","d.booked.b":"the original attached","d.told.title":"Announced","d.told.a":"vendor, total and VAT","d.told.b":"posted to your channel","d.wait.title":"It waits for you","d.wait.a":"the document arrives in Slack with the reason,","d.wait.b":"and two buttons — nothing is booked until you say","d.wait.yes":"Book it","d.wait.no":"Bin it","d.yourcall":"your call →","flow.swipe":"← drag the drawing sideways to follow it all →","wires.eyebrow":"the household he works in","wires.title":"Where he fetches from,<br>and where he puts things","w.folder.t":"Your scan folder","w.folder.d":"Dropbox, iCloud, anywhere on disk. He watches it and reacts the moment something lands.","w.mail.t":"A forwarding address","w.mail.d":"Send him the document by e-mail. He works out which attachment is the real one — and turns an HTML invoice into a proper PDF.","w.slack.d":"Every document announced with its numbers. Anything he's unsure of arrives with the PDF and two buttons: <b>book it<\/b> or <b>bin it<\/b>.","w.books.t":"Your accounting system","w.books.d":"SuperFaktura, mPOHODA or KROS — you choose in the settings. Where the system allows it, the original document goes with the expense.","w.ai.t":"Claude, or ChatGPT","w.ai.d":"Whichever you already pay for — on a subscription, or an API key. <span class=\"tag\">he isn't fussy<\/span>","w.bar.t":"Your menu bar","w.bar.d":"Ledgerton in the bar, a count of anything waiting, the whole list of what he has processed, and a settings window. Anything waiting can be booked or binned right there.","care.eyebrow":"the part that matters","care.title":"A good butler knows<br>when <em>not<\/em> to act","art.stamp":"CHECKED","care.body":"He will not enter a document he cannot vouch for. If the arithmetic disagrees with the\n          total, if the date is missing, if it turns out to be a delivery note —\n          <span class=\"hl-mint\">it waits for you<\/span>, with the reason written out.","care.1":"<b>Never twice.<\/b> Every document is recognised by its contents, so the same document scanned again, renamed, or re-synced is still the same document.","care.2":"<b>He checks with the books first.<\/b> If the same supplier already has that document number entered — even by hand — he leaves it alone.","care.3":"<b>Old documents wait.<\/b> Anything older than a year and a half is probably already booked, so he asks rather than assumes.","care.4":"<b>The original is never touched.<\/b> He works from a copy. Your scan stays exactly where you put it.","tally.eyebrow":"what you get back","tally.title":"The evening you were going to spend on this","tally.min":"min","tally.1":"saved per document — opening it, reading it, typing it in, filing it, checking you hadn't already","tally.sec":"sec","tally.2":"from a scan landing in the folder to the expense appearing in your books","tally.3":"the number of times he has entered the same document twice","tally.3b":"and he intends to keep it there","end.title":"Shall I take that folder,<br>sir or madam?","end.body":"Free, runs on your own Mac, and nothing leaves it except the document itself — to the model that reads it and the accountant that files it.","end.note":"not yet signed by Apple — the .dmg is still being tailored","foot.1":"Ledgerton — a UniqTec contraption.","foot.2":"uniqtec.com","foot.3":"Made for people who own a scanner and resent it.","meta.title":"Ledgerton","meta.desc":"Ledgerton is a butler for your bookkeeping. He reads every scanned document — invoices and petrol-station receipts alike — files it by date, and enters it in the books before you've finished your coffee.","art.receipt":"A doodled till receipt showing 131,88 plus 30,33 VAT making 162,21 euros, stamped as checked","art.tray":"Ledgerton offering a silver tray","care.5":"<b>A till receipt is a document like any other.<\/b> No due date, no variable symbol — that is what a receipt is, not a fault. He never holds one up over it.","w.hand.t":"Handed straight over","w.hand.d":"A receipt that was never going to reach a folder? Drop it on the window from the menu bar. The original stays where it is.","flow.third":"The third way in did not fit on the drawing, because it is the shortest: <span class=\"hl-mint\">hand him one<\/span> straight from the menu bar.","d.books.list":"SuperFaktura · mPOHODA · KROS","tally.1b":"≈ an hour back for every fifteen documents","install.lead":"Open Terminal and paste this line:","install.copy":"Copy","install.copied":"Copied","install.note":"He moves into Applications and appears in the menu bar. You will not need Terminal again.","install.req":"macOS 13 or newer · Apple Silicon","install.read":"read the script first","install.title":"Terminal","install.out1":"checked · 45 MB","install.out2":"Installed. Look for Ledgerton in your menu bar.","reel.eyebrow":"one minute","reel.title":"Watch him work","reel.note":"1:01 · with captions","report.eyebrow":"when something grates","report.title":"Tell him what<br>is not right","report.lede":"A bug that held you up, or a thing that isn't there. The message is written here and sent from your own mail — nothing leaves without you seeing it.","report.kindLabel":"What this is about","report.bug":"Something is broken","report.idea":"Something is missing","report.summaryLabel":"In one line","report.summaryHint":"Settings opens blank","report.detailLabel":"And a little more","report.detailHint":"What you did, what happened, and what you expected. Your macOS version helps, if you know it.","report.send":"Open in your mail","report.copy":"…or copy the whole message","report.copied":"Copied","report.subjectNote":"The subject will be:","report.subjectBug":"Bug","report.subjectIdea":"Feature","report.sentFrom":"sent from the Ledgerton site","report.to":"To","report.subjectWord":"Subject","report.needSomething":"Write at least a line, so he knows what it is about.","report.tooLong":"That is long for a mail client — better to copy it."}};
 
 const STORE = "ledgerton-lang";
 const buttons = document.querySelectorAll(".lang button");
@@ -1110,6 +1221,10 @@ function apply(lang) {
     // Our own strings, a few of which carry markup on purpose.
     if ("html" in el.dataset) el.innerHTML = value;
     else el.textContent = value;
+  }
+  for (const el of document.querySelectorAll("[data-t-ph]")) {
+    const value = dict[el.dataset.tPh];
+    if (value !== undefined) el.placeholder = value;
   }
   for (const el of document.querySelectorAll("[data-t-aria]")) {
     const value = dict[el.dataset.tAria];
@@ -1158,6 +1273,104 @@ let stored = null;
 try { stored = localStorage.getItem(STORE); } catch { /* private window */ }
 const initial = TEXT[fromUrl] ? fromUrl : (TEXT[stored] ? stored : "sk");
 if (initial !== "sk") choose(initial, false);
+
+/* ---------------------------------------------------------------------------
+   Telling him what is not right.
+
+   No server, and no form service either: that would mean a third party holding
+   other people's words for no good reason. The message is composed here and
+   handed to whatever the person already uses for post, so they read it before
+   it goes - which is the right way round for a bug report.
+
+   The address is assembled rather than written into the markup. This page is
+   public, the inbox behind it is a general one, and a plain mailto: in the
+   source is the first thing a harvester helps itself to.
+--------------------------------------------------------------------------- */
+const REPORT_TO = ["info", "uniqtec.sk"].join("@");
+
+// Some mail clients quietly truncate a mailto beyond roughly two thousand
+// characters, and a bug report that arrives cut in half is worse than one that
+// arrives by another route. Past this, it says so and offers the clipboard.
+const MAILTO_LIMIT = 1800;
+
+function reportDict() { return TEXT[document.documentElement.lang] ?? TEXT.sk; }
+
+function reportKind() {
+  const picked = document.querySelector('.note-pick[aria-checked="true"]');
+  return picked && picked.dataset.kind === "idea" ? "idea" : "bug";
+}
+
+function reportMessage() {
+  const dict = reportDict();
+  const summary = (document.getElementById("report-summary")?.value ?? "").trim();
+  const detail = (document.getElementById("report-detail")?.value ?? "").trim();
+  // Stamped into the page at release time, so it is the version actually being
+  // offered rather than whatever this script guesses.
+  const version = (document.getElementById("release-version")?.textContent ?? "").trim();
+  const word = dict[reportKind() === "idea" ? "report.subjectIdea" : "report.subjectBug"];
+  const subject = "[Ledgerton] " + word + (summary ? " — " + summary : "");
+  const body = detail + "\n\n—\nLedgerton " + version + "\n" + dict["report.sentFrom"];
+  return { subject, body };
+}
+
+function refreshSubject() {
+  const preview = document.getElementById("report-subject-preview");
+  if (preview) preview.textContent = reportMessage().subject;
+  const address = document.getElementById("report-address");
+  if (address) address.textContent = REPORT_TO;
+}
+
+for (const pick of document.querySelectorAll(".note-pick")) {
+  pick.addEventListener("click", () => {
+    for (const other of document.querySelectorAll(".note-pick")) {
+      other.setAttribute("aria-checked", String(other === pick));
+    }
+    refreshSubject();
+  });
+}
+document.getElementById("report-summary")?.addEventListener("input", refreshSubject);
+// The language buttons already have a listener; this one runs after it, once
+// the new strings are in place.
+for (const button of buttons) button.addEventListener("click", () => setTimeout(refreshSubject, 0));
+
+document.getElementById("report-send")?.addEventListener("click", () => {
+  const dict = reportDict();
+  const summary = document.getElementById("report-summary");
+  const detail = document.getElementById("report-detail");
+  const warning = document.getElementById("report-warning");
+  if (!summary.value.trim() && !detail.value.trim()) {
+    warning.textContent = dict["report.needSomething"];
+    summary.focus();
+    return;
+  }
+  const message = reportMessage();
+  const url = "mailto:" + REPORT_TO
+    + "?subject=" + encodeURIComponent(message.subject)
+    + "&body=" + encodeURIComponent(message.body);
+  if (url.length > MAILTO_LIMIT) {
+    warning.textContent = dict["report.tooLong"];
+    return;
+  }
+  warning.textContent = "";
+  location.href = url;
+});
+
+const reportCopy = document.getElementById("report-copy");
+reportCopy?.addEventListener("click", async () => {
+  const dict = reportDict();
+  const message = reportMessage();
+  const text = dict["report.to"] + ": " + REPORT_TO + "\n"
+    + dict["report.subjectWord"] + ": " + message.subject + "\n\n" + message.body;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    return; // no clipboard permission: the fields are selectable, which is the fallback
+  }
+  reportCopy.textContent = dict["report.copied"];
+  setTimeout(() => { reportCopy.textContent = dict["report.copy"]; }, 1800);
+});
+
+refreshSubject();
 </script>
 </body>
 </html>
