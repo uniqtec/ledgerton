@@ -8,12 +8,12 @@ scanned it — books it into your accounting system with the original attached,
 and mentions it in Slack. Anything he cannot vouch for waits for you, with the
 reason written out.
 
-**[ledgerton on the web →](https://uniqtec.github.io/ai-expense-processor/)**
+**[ledgerton on the web →](https://uniqtec.github.io/ledgerton/)**
 
 ## Install
 
 ```bash
-curl -fsSL https://uniqtec.github.io/ai-expense-processor/install.sh | bash
+curl -fsSL https://uniqtec.github.io/ledgerton/install.sh | bash
 ```
 
 He moves into `/Applications` and appears in your menu bar. Open **Settings…**
@@ -33,7 +33,7 @@ carries the SHA-256 of exactly one archive. It checks that hash before it
 installs anything, refuses an Intel Mac and macOS 12, verifies the unpacked
 app's signature, and quits a running copy cleanly so the processor lets go of
 its ledger before being replaced. You are welcome to
-[read it first](https://uniqtec.github.io/ai-expense-processor/install.sh) —
+[read it first](https://uniqtec.github.io/ledgerton/install.sh) —
 running a script from the internet without looking is a habit worth not having.
 
 Ledgerton is not yet signed by Apple. That is why the install goes through
