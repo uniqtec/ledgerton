@@ -297,6 +297,16 @@ section { padding: clamp(52px, 8vw, 96px) 0; }
 }
 .card-fine a { color: var(--ink-faint); text-decoration-style: dotted; text-underline-offset: 3px; }
 .card-fine a:hover { color: var(--ink-soft); }
+/* The one thing in this row somebody comes looking for. */
+.card-fine .version {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1px 7px;
+}
+.card-fine .version:hover { color: var(--ink); border-color: var(--ink-faint); }
 
 .quiet-link {
   font-family: var(--scribble);
@@ -1013,6 +1023,12 @@ footer a { color: var(--ink-soft); }
         </div>
         <p class="card-note" data-t="install.note">Usadí sa v Aplikáciách a objaví sa v hornej lište. Terminál potom už nikdy nebudete potrebovať.</p>
         <p class="card-fine">
+          <!-- Stamped by make-release.sh, like install.sh, so the version on the
+               page and the archive it offers cannot drift apart. Written in
+               rather than fetched: it is still right with JavaScript off, and
+               the page only ever ships in a released state anyway. -->
+          <a class="version" id="release-version"
+             href="https://github.com/uniqtec/ledgerton/releases/tag/v1.0.2">v1.0.2</a>
           <span data-t="install.req">macOS 13 a novší · Apple Silicon</span>
           <span data-t="end.note">zatiaľ bez podpisu od Apple — .dmg sa ešte šije</span>
           <a href="https://github.com/uniqtec/ai-expense-processor/blob/main/site/install.sh" data-t="install.read">najprv si ten skript prečítajte</a>
