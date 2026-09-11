@@ -1,9 +1,9 @@
 {
-  "version": "1.0.17",
+  "version": "1.0.18",
   "arch": "arm64",
-  "archive": "Ledgerton-1.0.17-arm64.tar.gz",
-  "url": "https://github.com/uniqtec/ledgerton/releases/download/v1.0.17/Ledgerton-1.0.17-arm64.tar.gz",
-  "sha256": "0b277a3e96bcaff128f1424db53c0a197f0157342ee403078e4ae98a672df554",
-  "notes": "https://github.com/uniqtec/ledgerton/releases/tag/v1.0.17",
+  "archive": "Ledgerton-1.0.18-arm64.tar.gz",
+  "url": "https://github.com/uniqtec/ledgerton/releases/download/v1.0.18/Ledgerton-1.0.18-arm64.tar.gz",
+  "sha256": "6f37f1cddace1b14c06dcdd0e7de263f6495df14f8768dbd7fff195f1d6a81e2",
+  "notes": "https://github.com/uniqtec/ledgerton/releases/tag/v1.0.18",
   "install": "curl -fsSL https://uniqtec.github.io/ledgerton/install.sh | bash"
 }
