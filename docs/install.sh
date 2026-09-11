@@ -15,8 +15,8 @@
 # different host than this file. Whoever wants to swap the app has to swap both.
 set -euo pipefail
 
-VERSION="1.0.19"
-SHA256="e176d98ca407804a5b71800314e0840048a72f94b652ebfdb2e5342021849dab"
+VERSION="1.0.20"
+SHA256="2f6b3abaf5bb3403a7ef4878f7d5ee572e96b29c736f4449fad92e0445884925"
 
 # The site and the app are published together, from a public repository of its
 # own: release assets on a private repository are a 404 to anybody outside the
